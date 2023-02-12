@@ -1,6 +1,7 @@
 import { compileToFunction } from 'compiler/index'
 import { query } from 'src/utils'
 import { Component } from '../types/component'
+import { mountComponent } from './lifecycle'
 import { initState } from './state'
 export function initMixin(Vue: typeof Component) {
   Vue.prototype._init = function (options) {
@@ -31,5 +32,6 @@ export function initMixin(Vue: typeof Component) {
         opt.render = render
       }
     }
+    mountComponent(this, el)
   }
 }
