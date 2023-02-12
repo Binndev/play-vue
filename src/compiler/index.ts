@@ -64,13 +64,13 @@ function gen(node: ASTElement) {
       while ((match = defaultTagRE.exec(text))) {
         const index = match.index
         if (index > lastIndex) {
-          token.push(text.slice(lastIndex, index))
+          token.push(JSON.stringify(text.slice(lastIndex, index)))
         }
         token.push(`_s(${match[1].trim()})`)
         lastIndex = index + match[0].length
       }
       if (lastIndex < text.length) {
-        token.push(text.slice(lastIndex))
+        token.push(JSON.stringify(text.slice(lastIndex)))
       }
       return `_v(${token.join('+')})`
     }
