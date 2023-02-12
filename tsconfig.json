@@ -23,15 +23,12 @@
     "types": ["node"],
     "paths": {
       "compiler/*": ["src/compiler/*"],
-      "core/*": ["src/core/*"],
-      "server/*": ["packages/server-renderer/src/*"],
-      "sfc/*": ["packages/compiler-sfc/src/*"],
-      "shared/*": ["src/shared/*"],
-      "web/*": ["src/platforms/web/*"],
       "v3": ["src/v3/index"],
       "v3/*": ["src/v3/*"],
       "types/*": ["src/types/*"],
-      "vue": ["src/platforms/web/entry-runtime-with-compiler"]
+      "utils": ["src/utils"],
+      "instance/*": ["src/instance/*"],
+      "vdom/*": ["src/vdom/*"]
     }
   },
   "include": ["src", "packages/*/src"]

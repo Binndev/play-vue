@@ -32,6 +32,7 @@ export function initMixin(Vue: typeof Component) {
         opt.render = render
       }
     }
+    // @ts-expect-error
     mountComponent(this, el)
   }
 }

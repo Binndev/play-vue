@@ -18,7 +18,8 @@ export type ComponentOptions = {
   // dom
   el?: string | Element
   template?: string
-  render?: (h: () => VNode) => VNode
+  // render?: (h: () => VNode) => VNode
+  render?: () => VNode
 }
 
 export type PropOptions = {
