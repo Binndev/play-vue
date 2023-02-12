@@ -42,7 +42,6 @@ export function parseHtml(html: string) {
       }
     }
   }
-  console.log(html)
 
   function parseStartTag() {
     const start = html.match(startTagOpen)

@@ -22,6 +22,7 @@ function genCode(ast: ASTElement) {
   return code
 }
 
+// 对属性操作
 function genProps(attrs: ASTAttrs[]) {
   let str = ''
   for (let i = 0, l = attrs.length; i < l; i++) {
@@ -44,6 +45,7 @@ function genChildren(children) {
   return children.map(child => gen(child))
 }
 
+// 对node节点操作
 const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g // {{}} 匹配到表达式变量
 function gen(node: ASTElement) {
   if (node.type === 1) {

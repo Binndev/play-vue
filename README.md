@@ -1,2 +1,8 @@
 # play-vue
-vue2简单实现
+
+vue2 简单实现
+
+# dev
+
+pnpm i
+pnpm dev
