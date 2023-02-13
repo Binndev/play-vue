@@ -10,6 +10,7 @@ export default class VNode {
   children?: Array<VNode>
   text?: string
   context?: Component
+  isComment?: boolean
 
   constructor(
     tag?: string,
@@ -24,6 +25,7 @@ export default class VNode {
     this.text = text
     this.context = context
     this.key = data && data.key
+    this.isComment = false
   }
 }
 
@@ -38,4 +40,12 @@ export function createElementVNode(
 
 export function createTextVNode(vm: Component, text?: string) {
   return new VNode(undefined, undefined, undefined, vm, text)
+}
+
+export function createEmptyVNode(text: string = '') {
+  const node = new VNode()
+  node.text = text
+  node.isComment = true
+
+  return node
 }

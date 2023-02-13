@@ -8,7 +8,7 @@ export function compileToFunction(template: string) {
   // 模板引擎的实现原理：with + new Function
   // 2.生成render方法（render方法执行后返回的结果是vdom）
   let code = genCode(ast)
-  code = `with(this){return ${code}}`
+  code = `with(this){return (${code})}`
   return new Function(code)
 }
 

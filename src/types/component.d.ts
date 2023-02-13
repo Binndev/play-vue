@@ -18,10 +18,10 @@ export declare class Component {
   _mount: (el?: Element) => Component
 
   // rendering
-  _render: () => VNode
+  _render: () => VNode | undefined
 
-  _c: (vnode?: VNode, vnodeData?: VNodeData) => VNode | void
-  _v: (value?: string | number) => VNode
+  _c: (tag?: string, vnodeData?: VNodeData) => VNode | void
+  _v: (value?: string) => VNode
   _s: (value: any) => string
 
   // private property
