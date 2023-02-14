@@ -11,6 +11,7 @@ export default class VNode {
   text?: string
   context?: Component
   isComment?: boolean
+  el?: Element
 
   constructor(
     tag?: string,

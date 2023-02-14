@@ -1,10 +1,15 @@
 import { Component } from 'types/component'
 import { VNodeData } from 'types/vnode'
+import { isPlainObject } from 'utils'
+import { patch } from 'vdom/patch'
 import VNode, { createEmptyVNode, createTextVNode } from 'vdom/vnode'
 import { createElementVNode } from 'vdom/vnode'
 
 export function initLifeCycle(Vue: typeof Component) {
-  Vue.prototype._update = function () {}
+  Vue.prototype._update = function (vnode: VNode) {
+    const el = this.$el
+    patch(el, vnode)
+  }
   Vue.prototype._render = function () {
     const vm: Component = this
     return vm.$options.render?.call(vm)
@@ -26,14 +31,18 @@ export function initLifeCycle(Vue: typeof Component) {
     return createTextVNode(this, text)
   }
   Vue.prototype._s = function (value: any) {
-    return value
+    if (!isPlainObject(value)) {
+      return value
+    }
+    return JSON.stringify(value)
   }
 }
 
 export function mountComponent(vm: Component, el: Element) {
+  vm.$el = el
   // 1. 调用render方法产生虚拟DOM
   const vdom = vm._render()!
-  console.log(vdom)
+  vm._update(vdom)
   // 2. 根据虚拟DOM产生真实DOM
   // vm._update(vdom)
   // 3.插入到el元素中

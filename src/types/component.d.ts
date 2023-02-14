@@ -7,6 +7,7 @@ export declare class Component {
 
   // public property
   $options: ComponentOptions
+  $el: Element
 
   // public method
   // $mount: (el?: Element | void) => Component & { [key: string]: any }
