@@ -26,7 +26,7 @@ export function initLifeCycle(Vue: typeof Component) {
     return createTextVNode(this, text)
   }
   Vue.prototype._s = function (value: any) {
-    return JSON.stringify(value)
+    return value
   }
 }
 
