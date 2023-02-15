@@ -31,7 +31,6 @@ export function initMixin(Vue: typeof Component) {
         const render = compileToFunction(template)
         opt.render = render
       }
-      console.log(opt.render)
     }
     // @ts-expect-error
     mountComponent(this, el)

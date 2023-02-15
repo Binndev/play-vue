@@ -8,7 +8,7 @@ import { createElementVNode } from 'vdom/vnode'
 export function initLifeCycle(Vue: typeof Component) {
   Vue.prototype._update = function (vnode: VNode) {
     const el = this.$el
-    patch(el, vnode)
+    this.el = patch(el, vnode)
   }
   Vue.prototype._render = function () {
     const vm: Component = this
