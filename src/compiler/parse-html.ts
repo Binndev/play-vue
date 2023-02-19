@@ -1,4 +1,5 @@
 import { ASTAttrs, ASTElement } from 'types/compiler'
+import { makeMap } from 'utils'
 
 const ncname = `[a-zA-Z_][\\-\\.0-9_a-zA-Z]*`
 const qnameCapture = `((?:${ncname}\\:)?${ncname})`
@@ -7,6 +8,11 @@ const endTag = new RegExp(`^<\\/${qnameCapture}[^>]*>`) //匹配结束标签名
 const attribute =
   /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/ //匹配属性
 const startTagClose = /^\s*(\/?)>/ // <div> <br />
+
+export const isUnaryTag = makeMap(
+  'area,base,br,col,embed,frame,hr,img,input,isindex,keygen,' +
+    'link,meta,param,source,track,wbr'
+)
 
 // 思想：匹配一个标签删除一个标签，解析结束的标志为html===''
 export function parseHtml(html: string) {
@@ -78,6 +84,7 @@ export function parseHtml(html: string) {
   }
 
   function start(tag: string, attrs: ASTAttrs[]) {
+    const unary = isUnaryTag(tag)
     let node = createASTElement(tag, attrs)
     if (!root) {
       root = node
@@ -86,8 +93,10 @@ export function parseHtml(html: string) {
       node.parent = currentParent
       currentParent.children.push(node)
     }
-    stack.push(node)
-    currentParent = node
+    if (!unary) {
+      stack.push(node)
+      currentParent = node
+    }
   }
 
   function chars(text: string) {
