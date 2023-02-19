@@ -1,3 +1,4 @@
+import Watcher from 'observe/watcher'
 import { Component } from 'types/component'
 import { VNodeData } from 'types/vnode'
 import { isPlainObject } from 'utils'
@@ -8,7 +9,7 @@ import { createElementVNode } from 'vdom/vnode'
 export function initLifeCycle(Vue: typeof Component) {
   Vue.prototype._update = function (vnode: VNode) {
     const el = this.$el
-    this.el = patch(el, vnode)
+    this.$el = patch(el, vnode)
   }
   Vue.prototype._render = function () {
     const vm: Component = this
@@ -41,9 +42,11 @@ export function initLifeCycle(Vue: typeof Component) {
 export function mountComponent(vm: Component, el: Element) {
   vm.$el = el
   // 1. 调用render方法产生虚拟DOM
-  const vdom = vm._render()!
-  vm._update(vdom)
   // 2. 根据虚拟DOM产生真实DOM
-  // vm._update(vdom)
   // 3.插入到el元素中
+
+  const updateComponent = () => {
+    vm._update(vm._render()!)
+  }
+  new Watcher(vm, updateComponent, true)
 }

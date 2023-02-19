@@ -28,7 +28,8 @@
       "types/*": ["src/types/*"],
       "utils": ["src/utils"],
       "instance/*": ["src/instance/*"],
-      "vdom/*": ["src/vdom/*"]
+      "vdom/*": ["src/vdom/*"],
+      "observe/*": ["src/observe/*"]
     }
   },
   "include": ["src", "packages/*/src"]
