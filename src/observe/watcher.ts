@@ -40,8 +40,40 @@ class Watcher {
   }
 
   update() {
+    // this.get()
+    queueWatcher(this)
+  }
+
+  run() {
+    console.log('run')
     this.get()
   }
+}
+
+// 异步更新
+let queue: Watcher[] = []
+let has = {}
+let pending = false
+function queueWatcher(watcher: Watcher) {
+  const id = watcher.id
+  if (!has[id]) {
+    queue.push(watcher)
+    has[id] = true
+
+    // 不管update执行多少次，最终只执行一次
+    if (!pending) {
+      setTimeout(flushScheduleQueue, 0)
+      pending = true
+    }
+  }
+}
+
+function flushScheduleQueue() {
+  const flushQueue = queue.slice(0)
+  queue = []
+  has = {}
+  pending = false
+  flushQueue.forEach(q => q.run())
 }
 
 export default Watcher
