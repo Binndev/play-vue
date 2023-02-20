@@ -1,3 +1,13 @@
+export const LIFE_CYCLE = [
+  'beforeCreate',
+  'created',
+  'beforeMount',
+  'mounted',
+  'beforeUpdate',
+  'updated',
+  'beforeDestroy',
+  'destroyed',
+]
 export const hasOwn = Object.hasOwn
 export function noop(a?: any, b?: any, c?: any) {}
 /**

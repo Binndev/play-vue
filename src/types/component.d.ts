@@ -4,6 +4,8 @@ import { VNodeData } from './vnode'
 
 export declare class Component {
   constructor(options?: any)
+  static options: Record<string, any>
+  static mixin: (mixin: Object) => any
 
   // public property
   $options: ComponentOptions
