@@ -1,7 +1,7 @@
 import Watcher from 'observe/watcher'
 import { Component } from 'types/component'
 import { VNodeData } from 'types/vnode'
-import { isPlainObject } from 'utils'
+import { isPlainObject, nextTick } from 'utils'
 import { patch } from 'vdom/patch'
 import VNode, { createEmptyVNode, createTextVNode } from 'vdom/vnode'
 import { createElementVNode } from 'vdom/vnode'
@@ -10,6 +10,9 @@ export function initLifeCycle(Vue: typeof Component) {
   Vue.prototype._update = function (vnode: VNode) {
     const el = this.$el
     this.$el = patch(el, vnode)
+  }
+  Vue.prototype.$nextTick = function (fn: (...args: any[]) => any) {
+    return nextTick(fn, this)
   }
   Vue.prototype._render = function () {
     const vm: Component = this

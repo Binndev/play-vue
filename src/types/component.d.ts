@@ -12,6 +12,7 @@ export declare class Component {
   // public method
   // $mount: (el?: Element | void) => Component & { [key: string]: any }
   $mount: (el?: Element | string) => void
+  $nextTick: (fn: (...args: any[]) => any, ctx?: object) => void | Promise<any>
 
   // life circle
   _init: Function
