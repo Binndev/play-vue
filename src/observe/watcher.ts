@@ -1,4 +1,5 @@
 import { Component } from 'types/component'
+import { nextTick } from 'utils'
 import Dep from './dep'
 
 /**
@@ -45,7 +46,6 @@ class Watcher {
   }
 
   run() {
-    console.log('run')
     this.get()
   }
 }
@@ -62,7 +62,7 @@ function queueWatcher(watcher: Watcher) {
 
     // 不管update执行多少次，最终只执行一次
     if (!pending) {
-      setTimeout(flushScheduleQueue, 0)
+      nextTick(flushScheduleQueue)
       pending = true
     }
   }
