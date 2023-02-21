@@ -53,7 +53,6 @@ function definedReactive(data, key, value) {
       return value
     },
     set(newVal) {
-      console.log('设置')
       if (newVal === value) return
       observe(newVal)
       value = newVal
