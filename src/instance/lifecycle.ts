@@ -52,4 +52,12 @@ export function mountComponent(vm: Component, el: Element) {
     vm._update(vm._render()!)
   }
   new Watcher(vm, updateComponent, true)
+  callHook(vm, 'mounted')
+}
+
+export function callHook(vm: Component, hook: string) {
+  const handlers = vm.$options[hook]
+  if (handlers) {
+    handlers.forEach(handler => handler())
+  }
 }

@@ -1,3 +1,4 @@
+import { ComponentOptions } from 'types/options'
 import { LIFE_CYCLE } from './base'
 
 // 定义策略
@@ -23,7 +24,7 @@ LIFE_CYCLE.forEach(hook => {
 export function mergeOptions(
   parent: Record<string, any>,
   child: Record<string, any>
-) {
+): ComponentOptions {
   const options = {}
   for (const key in parent) {
     mergeField(key)
@@ -43,5 +44,5 @@ export function mergeOptions(
     }
   }
 
-  return options
+  return options as ComponentOptions
 }
