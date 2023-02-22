@@ -1,7 +1,7 @@
 import { def } from 'src/utils'
 
 export const arrayProto = Object.create(Array.prototype)
-const arrayMethods = [
+export const arrayMethods = [
   'pop',
   'push',
   'shift',
@@ -32,6 +32,7 @@ arrayMethods.forEach(method => {
     if (inserted) {
       ob.observeArray(inserted)
     }
+    ob.dep.notify()
     return result
   })
 })

@@ -31,3 +31,5 @@ export function makeMap(
   }
   return expectsLowerCase ? val => map[val.toLowerCase()] : val => map[val]
 }
+
+export const hasProto = '__proto__' in {}
