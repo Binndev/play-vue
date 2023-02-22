@@ -51,7 +51,7 @@ export function mountComponent(vm: Component, el: Element) {
   const updateComponent = () => {
     vm._update(vm._render()!)
   }
-  new Watcher(vm, updateComponent, true)
+  new Watcher(vm, updateComponent, null, true)
   callHook(vm, 'mounted')
 }
 

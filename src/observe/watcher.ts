@@ -1,6 +1,6 @@
 import { Component } from 'types/component'
 import { nextTick } from 'utils'
-import Dep from './dep'
+import Dep, { popTarget, pushTarget } from './dep'
 
 /**
  * 一个属性对应一个dep
@@ -9,26 +9,45 @@ import Dep from './dep'
  * watcher和dep属于多对多的关系
  */
 
+export interface WatcherOptions {
+  lazy?: boolean
+  user?: boolean
+  sync?: boolean
+}
+
 let id = 0 //watcher的唯一标识
 class Watcher {
   id: number
   getter: Function
-  renderWatch: boolean //标识渲染watcher
+  renderWatcher: boolean //标识渲染watcher
+  lazy: boolean
+  dirty: boolean
   deps: Dep[]
   _depId: Set<number>
-  constructor(vm: Component, fn: Function, options) {
+  constructor(
+    vm: Component,
+    fn: Function,
+    options: WatcherOptions | null,
+    isRenderWatcher?: boolean
+  ) {
+    if (options) {
+      this.lazy = !!options.lazy
+    } else {
+      this.lazy = false
+    }
     this.id = id++
     this.getter = fn // getter 意味着调用这个函数可以发生取值操作
-    this.renderWatch = options
+    this.renderWatcher = !!isRenderWatcher
     this.deps = [] // 实现计算属性、组件卸载时使用
     this._depId = new Set()
+    this.dirty = this.lazy
     this.get()
   }
 
   get() {
-    Dep.target = this
+    pushTarget(this)
     this.getter()
-    Dep.target = null
+    popTarget()
   }
 
   addDep(dep: Dep) {

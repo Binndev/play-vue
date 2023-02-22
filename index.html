@@ -12,6 +12,7 @@
     {{msg}}
     {{name}}
     {{arr}}
+    <p>{{fullName}}</p>
   </div>
   <script src="./dist/vue.js"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script> -->
@@ -26,7 +27,14 @@
       data: {
         msg: '你好',
         name: 'lzb',
+        firstName: 'l',
+        lastName: 'zb',
         arr: [1,2,3, [4, 5]]
+      },
+      computed: {
+        fullName() {
+          return this.firstName + this.lastName
+        }
       },
       props: {},
       watch: {},

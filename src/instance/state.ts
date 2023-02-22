@@ -1,3 +1,4 @@
+import Watcher from 'observe/watcher'
 import { observe } from 'src/observe'
 import { Component } from 'types/component'
 import { hasOwn, isReversed, noop } from 'utils'
@@ -29,7 +30,7 @@ export function initState(vm: Component) {
     initData(vm)
   }
   if (opts.computed) {
-    initComputed()
+    initComputed(vm)
   }
   if (opts.watch) {
     initWatch()
@@ -66,7 +67,15 @@ function initData(vm: Component) {
 
 function initMethod() {}
 
-function initComputed() {}
+function initComputed(vm: Component) {
+  const computed = vm.$options.computed
+  const watchers = Object.create(null)
+  for (const key in computed) {
+    const userDef = computed[key]
+    const getter = typeof userDef === 'function' ? userDef : userDef.get
+    watchers[key] = new Watcher(vm, getter || noop, { lazy: true })
+  }
+}
 
 function initWatch() {}
 
