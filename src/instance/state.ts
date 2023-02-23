@@ -1,7 +1,7 @@
 import Watcher from 'observe/watcher'
 import { observe } from 'src/observe'
 import { Component } from 'types/component'
-import { hasOwn, isReversed, noop } from 'utils'
+import { hasOwn, isFunction, isReversed, noop } from 'utils'
 
 const sharedPropertyDefinition = {
   configurable: true,
@@ -69,11 +69,13 @@ function initMethod() {}
 
 function initComputed(vm: Component) {
   const computed = vm.$options.computed
-  const watchers = Object.create(null)
+  // 定义计算属性watcher并挂载到vm上
+  const watchers = (vm._computedWatchers = Object.create(null))
   for (const key in computed) {
     const userDef = computed[key]
     const getter = typeof userDef === 'function' ? userDef : userDef.get
     watchers[key] = new Watcher(vm, getter || noop, { lazy: true })
+    defineComputed(vm, key, userDef)
   }
 }
 
@@ -81,4 +83,28 @@ function initWatch() {}
 
 function getData(data: Function, vm: Component): any {
   data.call(vm, vm)
+}
+
+function defineComputed(
+  vm: Component,
+  key: string,
+  userDef: Record<string, any> | (() => any)
+) {
+  if (!isFunction(userDef)) {
+    sharedPropertyDefinition.set = userDef.set || noop
+  }
+  sharedPropertyDefinition.get = createComputedGetter(key)
+
+  Object.defineProperty(vm, key, sharedPropertyDefinition)
+}
+
+function createComputedGetter(key: string) {
+  return function () {
+    const watcher = this._computedWatchers && this._computedWatchers[key]
+    if (watcher.dirty) {
+      watcher.evaluate()
+    }
+
+    return watcher.value
+  }
 }

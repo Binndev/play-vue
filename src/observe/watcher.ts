@@ -17,6 +17,8 @@ export interface WatcherOptions {
 
 let id = 0 //watcher的唯一标识
 class Watcher {
+  vm: Component
+  value: any
   id: number
   getter: Function
   renderWatcher: boolean //标识渲染watcher
@@ -38,15 +40,21 @@ class Watcher {
     this.id = id++
     this.getter = fn // getter 意味着调用这个函数可以发生取值操作
     this.renderWatcher = !!isRenderWatcher
+    this.vm = vm
     this.deps = [] // 实现计算属性、组件卸载时使用
     this._depId = new Set()
     this.dirty = this.lazy
+    !this.lazy && this.get()
+  }
+
+  evaluate() {
     this.get()
+    this.dirty = false
   }
 
   get() {
     pushTarget(this)
-    this.getter()
+    this.value = this.getter.call(this.vm)
     popTarget()
   }
 
@@ -60,7 +68,6 @@ class Watcher {
   }
 
   update() {
-    // this.get()
     queueWatcher(this)
   }
 
