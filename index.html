@@ -38,7 +38,11 @@
         }
       },
       props: {},
-      watch: {},
+      watch: {
+        firstName: (newVal, oldVal) => {
+          console.log(newVal)
+        }
+      },
       created() {
         console.log(2)
       }
@@ -46,7 +50,6 @@
     // vm.arr.push(4);
     // vm.arr[3].push(6);
     setTimeout(() => {
-      debugger
       vm.firstName = '刘'
     },1000)
   </script>

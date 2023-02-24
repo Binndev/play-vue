@@ -15,7 +15,11 @@ export declare class Component {
   // $mount: (el?: Element | void) => Component & { [key: string]: any }
   $mount: (el?: Element | string) => void
   $nextTick: (fn: (...args: any[]) => any, ctx?: object) => void | Promise<any>
-
+  $watch: (
+    expOrFn: string | (() => any),
+    cb: Function,
+    options?: Record<string, any>
+  ) => Function
   // life circle
   _init: Function
   _update: (vnode: VNode) => void

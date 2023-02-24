@@ -34,7 +34,7 @@ export function initState(vm: Component) {
     initComputed(vm)
   }
   if (opts.watch) {
-    initWatch()
+    initWatch(vm)
   }
   if (opts.method) {
     initMethod
@@ -80,7 +80,10 @@ function initComputed(vm: Component) {
   }
 }
 
-function initWatch() {}
+function initWatch(vm: Component) {
+  const watch = vm.$options.watch
+  console.log(watch)
+}
 
 function getData(data: Function, vm: Component): any {
   data.call(vm, vm)

@@ -38,4 +38,12 @@ export function initMixin(Vue: typeof Component) {
     // @ts-expect-error
     mountComponent(this, el)
   }
+
+  Vue.prototype.$watch = function (
+    expOrFn: string | (() => any),
+    cb: Function,
+    options?: Record<string, any>
+  ) {
+    return () => ({})
+  }
 }
