@@ -68,11 +68,24 @@ class Watcher {
   }
 
   update() {
-    queueWatcher(this)
+    // 计算属性更新，就将值改为脏值
+    if (this.lazy) {
+      this.dirty = true
+    } else {
+      queueWatcher(this)
+    }
   }
 
   run() {
     this.get()
+  }
+
+  // 计算属性添加依赖
+  depend() {
+    let l = this.deps.length
+    while (l--) {
+      this.deps[l].depend() //计算属性依赖的dep收集渲染watcher
+    }
   }
 }
 

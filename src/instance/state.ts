@@ -1,3 +1,4 @@
+import Dep from 'observe/dep'
 import Watcher from 'observe/watcher'
 import { observe } from 'src/observe'
 import { Component } from 'types/component'
@@ -104,7 +105,10 @@ function createComputedGetter(key: string) {
     if (watcher.dirty) {
       watcher.evaluate()
     }
-
+    // 计算属性出栈后 队列里还存在渲染watcher，此时需要让计算属性中的属性添加渲染watcher
+    if (Dep.target) {
+      watcher.depend()
+    }
     return watcher.value
   }
 }

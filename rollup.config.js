@@ -10,7 +10,7 @@ export default defineConfig({
     file: 'dist/vue.js',
     format: 'umd',
    name: 'Vue', // 全局变量
-   sourcemap: false
+   sourcemap: true
   },
   plugins: [
     typescript({
