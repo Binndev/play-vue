@@ -1,5 +1,5 @@
 import { Component } from 'types/component'
-import { nextTick } from 'utils'
+import { isFunction, nextTick } from 'utils'
 import Dep, { popTarget, pushTarget } from './dep'
 
 /**
@@ -25,9 +25,12 @@ class Watcher {
   lazy: boolean
   dirty: boolean
   deps: Dep[]
+  user?: boolean
+  cb: Function
   _depId: Set<number>
   constructor(
     vm: Component,
+    exprOrFn: string | (() => any),
     fn: Function,
     options: WatcherOptions | null,
     isRenderWatcher?: boolean
@@ -38,8 +41,17 @@ class Watcher {
       this.lazy = false
     }
     this.id = id++
-    this.getter = fn // getter 意味着调用这个函数可以发生取值操作
+    if (isFunction(exprOrFn)) {
+      this.getter = exprOrFn // getter 意味着调用这个函数可以发生取值操作
+    } else {
+      // exprOrFn 为字符串
+      this.getter = function () {
+        return this[exprOrFn]
+      }
+    }
+    this.user = !!options?.user
     this.renderWatcher = !!isRenderWatcher
+    this.cb = fn
     this.vm = vm
     this.deps = [] // 实现计算属性、组件卸载时使用
     this._depId = new Set()
@@ -56,6 +68,7 @@ class Watcher {
     pushTarget(this)
     this.value = this.getter.call(this.vm)
     popTarget()
+    return this.value
   }
 
   addDep(dep: Dep) {
@@ -77,7 +90,11 @@ class Watcher {
   }
 
   run() {
-    this.get()
+    const oldValue = this.value
+    const newValue = this.get()
+    if (this.user) {
+      this.cb.call(this.vm, newValue, oldValue)
+    }
   }
 
   // 计算属性添加依赖

@@ -2,7 +2,14 @@ import Dep from 'observe/dep'
 import Watcher from 'observe/watcher'
 import { observe } from 'src/observe'
 import { Component } from 'types/component'
-import { hasOwn, isFunction, isReversed, noop } from 'utils'
+import {
+  hasOwn,
+  isFunction,
+  isPlainObject,
+  isReversed,
+  isString,
+  noop,
+} from 'utils'
 
 const sharedPropertyDefinition = {
   configurable: true,
@@ -69,20 +76,48 @@ function initData(vm: Component) {
 function initMethod() {}
 
 function initComputed(vm: Component) {
-  const computed = vm.$options.computed
+  const computed = vm.$options.computed as Object
   // 定义计算属性watcher并挂载到vm上
   const watchers = (vm._computedWatchers = Object.create(null))
   for (const key in computed) {
     const userDef = computed[key]
-    const getter = typeof userDef === 'function' ? userDef : userDef.get
-    watchers[key] = new Watcher(vm, getter || noop, { lazy: true })
+    const getter = isFunction(userDef) ? userDef : userDef.get
+    watchers[key] = new Watcher(vm, getter || noop, noop, { lazy: true })
     defineComputed(vm, key, userDef)
   }
 }
 
 function initWatch(vm: Component) {
   const watch = vm.$options.watch
-  console.log(watch)
+  for (const key in watch) {
+    // handler 可能是数组、函数、字符串、对象（里面有个handler方法）等
+    const handler = watch[key]
+    if (Array.isArray(handler)) {
+      for (let i = 0, j = handler.length; i < j; i++) {
+        createWatcher(vm, key, handler[i])
+      }
+    } else {
+      createWatcher(vm, key, handler)
+    }
+  }
+}
+
+//
+function createWatcher(
+  vm: Component,
+  expOrFn: string | (() => any),
+  handler: any,
+  options?: Object
+) {
+  if (isPlainObject(handler)) {
+    options = handler
+    handler = handler.handler
+  }
+  if (isString(handler)) {
+    handler = vm[handler]
+  }
+
+  return vm.$watch(expOrFn, handler, options)
 }
 
 function getData(data: Function, vm: Component): any {

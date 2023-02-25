@@ -1,4 +1,5 @@
 import { compileToFunction } from 'compiler/index'
+import Watcher from 'observe/watcher'
 import { mergeOptions, query } from 'src/utils'
 import { Component } from '../types/component'
 import { callHook, mountComponent } from './lifecycle'
@@ -44,6 +45,10 @@ export function initMixin(Vue: typeof Component) {
     cb: Function,
     options?: Record<string, any>
   ) {
+    console.log(this)
+    options = options || {}
+    options.user = true
+    new Watcher(this, expOrFn, cb, options)
     return () => ({})
   }
 }

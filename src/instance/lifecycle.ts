@@ -1,7 +1,7 @@
 import Watcher from 'observe/watcher'
 import { Component } from 'types/component'
 import { VNodeData } from 'types/vnode'
-import { isPlainObject, nextTick } from 'utils'
+import { isPlainObject, nextTick, noop } from 'utils'
 import { patch } from 'vdom/patch'
 import VNode, { createEmptyVNode, createTextVNode } from 'vdom/vnode'
 import { createElementVNode } from 'vdom/vnode'
@@ -51,7 +51,7 @@ export function mountComponent(vm: Component, el: Element) {
   const updateComponent = () => {
     vm._update(vm._render()!)
   }
-  new Watcher(vm, updateComponent, null, true)
+  new Watcher(vm, updateComponent, noop, null, true)
   callHook(vm, 'mounted')
 }
 
