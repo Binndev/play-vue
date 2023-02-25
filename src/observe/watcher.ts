@@ -1,5 +1,5 @@
 import { Component } from 'types/component'
-import { isFunction, nextTick } from 'utils'
+import { isFunction, nextTick, parsePath } from 'utils'
 import Dep, { popTarget, pushTarget } from './dep'
 
 /**
@@ -46,7 +46,7 @@ class Watcher {
     } else {
       // exprOrFn 为字符串
       this.getter = function () {
-        return this[exprOrFn]
+        return parsePath(exprOrFn)(this)
       }
     }
     this.user = !!options?.user

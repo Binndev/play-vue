@@ -39,8 +39,8 @@
       },
       props: {},
       watch: {
-        firstName: (newVal, oldVal) => {
-          console.log(newVal, oldVal)
+        firstName(newVal, oldVal) {
+          console.log(newVal, oldVal, '111')
         }
       },
       created() {

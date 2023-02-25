@@ -33,3 +33,15 @@ export function makeMap(
 }
 
 export const hasProto = '__proto__' in {}
+
+export function parsePath(path: string) {
+  const segments = path.split('.')
+  return function (obj) {
+    if (!obj) return
+    for (let i = 0, j = segments.length; i < j; i++) {
+      const segment = segments[i]
+      obj = obj[segment]
+    }
+    return obj
+  }
+}
