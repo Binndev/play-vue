@@ -1,6 +1,7 @@
 import { Component } from 'types/component'
-import { isFunction, nextTick, parsePath } from 'utils'
+import { isFunction, parsePath } from 'utils'
 import Dep, { popTarget, pushTarget } from './dep'
+import { queueWatcher } from './scheduler'
 
 /**
  * 一个属性对应一个dep
@@ -27,6 +28,7 @@ class Watcher {
   deps: Dep[]
   user?: boolean
   cb: Function
+  active: boolean
   _depId: Set<number>
   constructor(
     vm: Component,
@@ -56,6 +58,7 @@ class Watcher {
     this.deps = [] // 实现计算属性、组件卸载时使用
     this._depId = new Set()
     this.dirty = this.lazy
+    this.active = true
     !this.lazy && this.get()
   }
 
@@ -90,10 +93,12 @@ class Watcher {
   }
 
   run() {
-    const oldValue = this.value
-    const newValue = this.get()
-    if (this.user) {
-      this.cb.call(this.vm, newValue, oldValue)
+    if (this.active) {
+      const oldValue = this.value
+      const newValue = this.get()
+      if (this.user) {
+        this.cb.call(this.vm, newValue, oldValue)
+      }
     }
   }
 
@@ -104,32 +109,15 @@ class Watcher {
       this.deps[l].depend() //计算属性依赖的dep收集渲染watcher
     }
   }
-}
 
-// 异步更新
-let queue: Watcher[] = []
-let has = {}
-let pending = false
-function queueWatcher(watcher: Watcher) {
-  const id = watcher.id
-  if (!has[id]) {
-    queue.push(watcher)
-    has[id] = true
-
-    // 不管update执行多少次，最终只执行一次
-    if (!pending) {
-      nextTick(flushScheduleQueue)
-      pending = true
+  // unWatch
+  teardown() {
+    let i = this.deps.length
+    while (i--) {
+      this.deps[i].removeSub(this)
     }
+    this.active = false
   }
-}
-
-function flushScheduleQueue() {
-  const flushQueue = queue.slice(0)
-  queue = []
-  has = {}
-  pending = false
-  flushQueue.forEach(q => q.run())
 }
 
 export default Watcher
