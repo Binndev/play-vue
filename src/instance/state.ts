@@ -43,8 +43,8 @@ export function initState(vm: Component) {
   if (opts.watch) {
     initWatch(vm)
   }
-  if (opts.method) {
-    initMethod
+  if (opts.methods) {
+    initMethod(vm)
   }
 }
 
@@ -56,7 +56,7 @@ function initData(vm: Component) {
   vm._data = data
   const keys = Object.keys(data)
   const props = vm.$options.props
-  const methods = vm.$options.method
+  const methods = vm.$options.methods
   let i = keys.length
   while (i--) {
     const key = keys[i]
@@ -73,7 +73,13 @@ function initData(vm: Component) {
   observe(data)
 }
 
-function initMethod() {}
+function initMethod(vm: Component) {
+  const methods = vm.$options.methods
+  for (const key in methods) {
+    const method = methods[key]
+    vm[key] = typeof method === 'function' ? method.bind(vm) : noop
+  }
+}
 
 function initComputed(vm: Component) {
   const computed = vm.$options.computed as Object
@@ -102,7 +108,6 @@ function initWatch(vm: Component) {
   }
 }
 
-//
 function createWatcher(
   vm: Component,
   expOrFn: string | (() => any),

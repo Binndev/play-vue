@@ -43,12 +43,18 @@
           console.log(newVal, oldVal, '111')
         }
       },
+      methods: {
+        getName() {
+          console.log('name:',this.name)
+        }
+      },
       created() {
         console.log(2)
+        this.getName()
       }
     });
     // vm.arr.push(4);
-    // vm.arr[3].push(6);
+    vm.arr[3].push(6);
     const unWatch = vm.$watch('firstName', (val) => {console.log(val,'--'); unWatch()})
     setTimeout(() => {
       vm.firstName = '刘'

@@ -58,6 +58,6 @@ export function mountComponent(vm: Component, el: Element) {
 export function callHook(vm: Component, hook: string) {
   const handlers = vm.$options[hook]
   if (handlers) {
-    handlers.forEach(handler => handler())
+    handlers.forEach(handler => handler.call(vm))
   }
 }
