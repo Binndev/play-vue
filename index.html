@@ -49,8 +49,12 @@
     });
     // vm.arr.push(4);
     // vm.arr[3].push(6);
+    const unWatch = vm.$watch('firstName', (val) => {console.log(val,'--'); unWatch()})
     setTimeout(() => {
       vm.firstName = '刘'
+      setTimeout(() => {
+        vm.firstName = 'l'
+      }, 500)
     },1000)
   </script>
 </body>

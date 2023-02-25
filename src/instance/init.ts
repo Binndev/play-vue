@@ -45,10 +45,9 @@ export function initMixin(Vue: typeof Component) {
     cb: Function,
     options?: Record<string, any>
   ) {
-    console.log(this)
     options = options || {}
     options.user = true
     const watcher = new Watcher(this, expOrFn, cb, options)
-    return watcher.teardown
+    return () => watcher.teardown()
   }
 }
