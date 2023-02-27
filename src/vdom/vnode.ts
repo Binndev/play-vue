@@ -50,3 +50,7 @@ export function createEmptyVNode(text: string = '') {
 
   return node
 }
+
+export function isSameVnode(newVNode: VNode, oldVNode: VNode) {
+  return newVNode.tag === oldVNode.tag && newVNode.key === oldVNode.key
+}
