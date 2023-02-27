@@ -48,7 +48,7 @@ function patchVNode(oldVNode: VNode, newVNode: VNode) {
     // 具体的diff
     // updataChildren(el, oldChildren, oldChildren)
   } else if (newChildren.length > 0 && !oldChildren.length) {
-    mountChildren(el, newChildren)
+    mountChildren(el, null, newChildren)
   } else if (!newChildren && oldChildren.length) {
     unmountChildren(el, oldChildren)
   }
@@ -74,8 +74,8 @@ function createElm(vnode: VNode) {
 
 function patchProps(el, oldProps, props) {
   // 旧节点中存在属性，新节点不存在
-  const oldStyles = oldProps.style || {}
-  const newStyles = props.style || {}
+  const oldStyles = oldProps?.style || {}
+  const newStyles = props?.style || {}
   for (const key in oldStyles) {
     if (!newStyles[key]) {
       el.style[key] = ''
@@ -97,10 +97,14 @@ function patchProps(el, oldProps, props) {
   }
 }
 
-function mountChildren(el, newChildren) {
+function mountChildren(el, insert, newChildren) {
   for (let i = 0, l = newChildren.length; i < l; i++) {
     const child = newChildren[i]
-    el.appendChild(createElm(child))
+    if (child.el) {
+      el.insertBefore(insert, child.el)
+    } else {
+      el.insertBefore(insert, createElm(child))
+    }
   }
 }
 
@@ -108,5 +112,86 @@ function unmountChildren(el, oldChildren) {
   for (let i = 0, l = oldChildren.length; i < l; i++) {
     const child = oldChildren[i]
     el.removeChild(child.el)
+  }
+}
+
+function updataChildren(el, oldChildren, newChildren) {
+  // 双指针
+  let oldStartIndex = 0
+  let oldEndIndex = oldChildren.length - 1
+  let newStartIndex = 0
+  let newEndIndex = newChildren.length - 1
+
+  let oldStartVNode = oldChildren[oldStartIndex]
+  let oldEndVNode = oldChildren[oldEndIndex]
+  let newStartVNode = newChildren[newStartIndex]
+  let newEndVNode = newChildren[newEndIndex]
+
+  const map = {}
+
+  for (let i = 0, l = oldChildren.length; i < l; i++) {
+    const child = oldChildren[i]
+    map[child.key] = i
+  }
+
+  while (oldStartIndex <= oldEndIndex && newStartIndex <= newEndIndex) {
+    if (!oldStartVNode) {
+      oldStartVNode = oldChildren[++oldStartIndex]
+    } else if (!oldEndVNode) {
+      oldEndVNode = oldChildren[--oldEndVNode]
+    }
+    // 头节点从左往右
+    else if (isSameVnode(oldStartVNode, newStartVNode)) {
+      patchVNode(oldStartVNode, newStartVNode)
+      oldStartVNode = oldChildren[++oldStartIndex]
+      newStartVNode = newChildren[++newStartIndex]
+    }
+    // 尾节点从右向左
+    else if (isSameVnode(oldEndVNode, newEndVNode)) {
+      patchVNode(oldEndVNode, newEndVNode)
+      oldEndVNode = oldChildren[--oldEndIndex]
+      newEndVNode = newChildren[--newEndIndex]
+    }
+    // 首尾节点对比
+    // 旧end节点与新start节点对比
+    else if (isSameVnode(oldEndVNode, newStartVNode)) {
+      patchVNode(oldEndVNode, newStartVNode)
+      mountChildren(el, oldStartVNode.el, [oldEndVNode])
+      oldEndVNode = oldChildren[--oldEndIndex]
+      newStartVNode = newChildren[++newStartIndex]
+    }
+    // 旧start节点和新end节点对比
+    else if (isSameVnode(oldStartVNode, newEndVNode)) {
+      patchVNode(oldStartVNode, newEndVNode)
+      mountChildren(el, oldEndVNode.el.nextSibling, [oldStartVNode])
+      oldStartVNode = oldChildren[++oldStartIndex]
+      newEndVNode = newChildren[--newEndIndex]
+    } else {
+      // 乱序对比（根据旧的列表做一个映射关系，用新的节点查找，找到则移动，找不到则添加，最后删除多余的）
+      let moveIndex = map[newStartVNode.key]
+      if (moveIndex != null) {
+        const moveNode = oldChildren[moveIndex]
+        mountChildren(el, oldStartVNode.el, [moveNode])
+        oldChildren[moveIndex] = undefined //节点已经移动
+        patchVNode(moveNode, newStartVNode)
+      } else {
+        mountChildren(el, oldStartVNode.el, [newStartVNode])
+      }
+      newStartVNode = newChildren[++newStartIndex]
+    }
+  }
+  if (newStartIndex <= newEndIndex) {
+    const anchor = newChildren[newStartIndex + 1]
+      ? newChildren[newStartIndex + 1].el
+      : null
+    mountChildren(el, anchor, newChildren.slice(newStartIndex))
+  }
+  if (oldStartIndex <= oldEndIndex) {
+    for (let i = oldStartIndex; i < oldEndIndex; i++) {
+      const child = oldChildren[i]
+      if (child) {
+        el.removeChild(child.el)
+      }
+    }
   }
 }

@@ -100,7 +100,7 @@ export function parseHtml(html: string) {
   }
 
   function chars(text: string) {
-    text = text.replace(/\s/g, ' ')
+    text = text.replace(/\s/g, '')
     text &&
       currentParent.children.push({
         type: TEXT_TYPE,
