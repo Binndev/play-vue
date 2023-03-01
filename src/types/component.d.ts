@@ -35,4 +35,5 @@ export declare class Component {
   // private property
   _data: Record<string, any>
   _computedWatchers: Record<string, any>
+  _vnode: VNode
 }

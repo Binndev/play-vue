@@ -15,7 +15,7 @@ export function patch(oldVNode: Element | VNode, vnode: VNode) {
 
     return newElm
   } else {
-    patchVNode(oldVNode, vnode)
+    return patchVNode(oldVNode, vnode)
   }
 }
 
@@ -33,7 +33,8 @@ function patchVNode(oldVNode: VNode, newVNode: VNode) {
   // 文本情况
   if (!oldVNode.tag) {
     if (oldVNode.text !== newVNode.text) {
-      oldVNode.children.textContent = newVNode.text
+      oldVNode.el.textContent = newVNode.text
+      return el
     }
   }
   // 标签情况 对比标签属性
@@ -46,7 +47,7 @@ function patchVNode(oldVNode: VNode, newVNode: VNode) {
   const newChildren = newVNode.children || []
   if (oldChildren.length > 0 && newChildren.length > 0) {
     // 具体的diff
-    // updataChildren(el, oldChildren, oldChildren)
+    updataChildren(el, oldChildren, newChildren)
   } else if (newChildren.length > 0 && !oldChildren.length) {
     mountChildren(el, null, newChildren)
   } else if (!newChildren && oldChildren.length) {
@@ -73,14 +74,16 @@ function createElm(vnode: VNode) {
 }
 
 function patchProps(el, oldProps, props) {
-  // 旧节点中存在属性，新节点不存在
-  const oldStyles = oldProps?.style || {}
-  const newStyles = props?.style || {}
+  oldProps = oldProps || {}
+  props = props || {}
+  const oldStyles = oldProps.style || {}
+  const newStyles = props.style || {}
   for (const key in oldStyles) {
     if (!newStyles[key]) {
       el.style[key] = ''
     }
   }
+  // 旧节点中存在属性，新节点不存在
   for (const key in oldProps) {
     if (!props[key]) {
       el.removeAttribute(key)

@@ -8,10 +8,6 @@
 </head>
 <body>
   <div id="app">
-    <br/>
-    {{msg}}
-    {{name}}
-    {{arr}}
     <p>{{fullName}} {{fullName}}  {{fullName}} {{fullName}}</p>
   </div>
   <script src="./dist/vue.js"></script>
@@ -53,9 +49,11 @@
         this.getName()
       }
     });
-    // vm.arr.push(4);
+    setTimeout(() => {
+      vm.msg = '哈喽'
+    },1000)
+    vm.arr.push(4);
     vm.arr[3].push(6);
-    const unWatch = vm.$watch('firstName', (val) => {console.log(val,'--'); unWatch()})
     setTimeout(() => {
       vm.firstName = '刘'
       setTimeout(() => {

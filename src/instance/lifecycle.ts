@@ -9,7 +9,13 @@ import { createElementVNode } from 'vdom/vnode'
 export function initLifeCycle(Vue: typeof Component) {
   Vue.prototype._update = function (vnode: VNode) {
     const el = this.$el
-    this.$el = patch(el, vnode)
+    const preVNode = this._vnode
+    this._vnode = vnode // 第一次渲染的时候将vnode保存在实例上
+    if (preVNode) {
+      this.$el = patch(preVNode, vnode)
+    } else {
+      this.$el = patch(el, vnode)
+    }
   }
   Vue.prototype.$nextTick = function (fn: (...args: any[]) => any) {
     return nextTick(fn, this)
