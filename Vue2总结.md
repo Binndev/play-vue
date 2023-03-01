@@ -2,6 +2,9 @@
 
 ## 数据劫持
 
+Vue 在初始化时，会遍历 data 中的所有属性，通过 Object.defineProperty 方法定义属性的 getter 和 setter。
+并将属性代理到实例上。当属性被读取时会触发 getter 方法，属性被赋值时会触发 setter 方法，从而实现数据劫持。
+
 ## 模板编译
 
 ## 响应式
