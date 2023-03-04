@@ -1,4 +1,5 @@
 import VNode from 'src/vdom/vnode'
+import { Component } from './component'
 
 export type ComponentOptions = {
   // data
@@ -20,6 +21,12 @@ export type ComponentOptions = {
   template?: string
   // render?: (h: () => VNode) => VNode
   render?: () => VNode
+
+  // asset
+  components?: { [key: string]: Component }
+
+  // private
+  _base: typeof Component
 }
 
 export type PropOptions = {

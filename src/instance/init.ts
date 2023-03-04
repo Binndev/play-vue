@@ -27,7 +27,7 @@ export function initMixin(Vue: typeof Component) {
       if (!opt.template && el) {
         // @ts-expect-error
         template = el.outerHTML
-      } else if (el) {
+      } else {
         template = opt.template
       }
 

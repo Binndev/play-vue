@@ -5,6 +5,10 @@ import VNode, { isSameVnode } from './vnode'
 // 既有更新，又有挂载 oldVNode为VNode则为更新
 
 export function patch(oldVNode: Element | VNode, vnode: VNode) {
+  // 组件的挂载
+  if (!oldVNode) {
+    return createElm(vnode)
+  }
   const isRealElement = isDef(oldVNode?.nodeType)
   if (isRealElement) {
     const elm = oldVNode
@@ -57,6 +61,10 @@ function patchVNode(oldVNode: VNode, newVNode: VNode) {
 }
 
 function createElm(vnode: VNode) {
+  if (createComponent(vnode)) {
+    return vnode.componentInstance?.$el
+  }
+
   const { tag, text, children, data } = vnode
   if (isString(tag)) {
     vnode.el = document.createElement(tag) // 将真实节点和虚拟节点对应起来， 以便后续diff
@@ -71,6 +79,18 @@ function createElm(vnode: VNode) {
   }
 
   return vnode.el
+}
+
+function createComponent(vnode: VNode) {
+  const data = vnode.data
+  if (data?.hook) {
+    data.hook.init(vnode)
+  }
+
+  // 是组件
+  if (vnode.componentInstance) {
+    return true
+  }
 }
 
 function patchProps(el, oldProps, props) {

@@ -1,5 +1,6 @@
 import { Component } from 'types/component'
 import { GlobalApi } from 'types/global-api'
+import { mergeOptions } from 'utils'
 
 export function initExtend(Vue: GlobalApi) {
   Vue.extend = function (options) {
@@ -11,7 +12,7 @@ export function initExtend(Vue: GlobalApi) {
 
     Sub.prototype = Object.create(Super.prototype)
     Sub.prototype.constructor = Sub
-    Sub.options = options
+    Sub.options = mergeOptions(Vue.options, options)
 
     return Sub
   }

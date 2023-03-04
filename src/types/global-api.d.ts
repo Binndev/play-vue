@@ -8,4 +8,8 @@ export interface GlobalApi {
   set: <T>(target: Object | Array<T>, key: string | number, value: T) => T
   extend: (options: typeof Component | object) => typeof Component
   delete: <T>(target: Object | Array<T>, key: string | number) => void
+  component: (
+    id: string,
+    def?: typeof Component | Object
+  ) => typeof Component | void
 }

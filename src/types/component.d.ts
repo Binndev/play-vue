@@ -1,11 +1,13 @@
 import VNode from 'vdom/vnode'
 import { ComponentOptions } from './options'
 import { VNodeData } from './vnode'
+import { GlobalApi } from './global-api'
 
 export declare class Component {
   constructor(options?: any)
   static options: Record<string, any>
   static mixin: (mixin: Object) => any
+  static extend: GlobalApi['extend']
 
   // public property
   $options: ComponentOptions

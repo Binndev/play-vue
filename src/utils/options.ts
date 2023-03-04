@@ -18,6 +18,17 @@ function mergeLifecycleHook(
   }
 }
 
+// 组件合并策略
+strats.components = function (parentVal, childVal) {
+  const res = Object.create(parentVal)
+  if (childVal) {
+    for (const key in childVal) {
+      res[key] = childVal[key]
+    }
+  }
+  return res
+}
+
 LIFE_CYCLE.forEach(hook => {
   strats[hook] = mergeLifecycleHook
 })

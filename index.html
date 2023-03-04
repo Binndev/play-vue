@@ -8,6 +8,7 @@
 </head>
 <body>
   <div id="app">
+    {{msg}}
     <p>{{fullName}} {{fullName}}  {{fullName}} {{fullName}}</p>
   </div>
   <div id ="root"></div>
@@ -19,10 +20,6 @@
         console.log(1);
       }
     })
-    const Sub = Vue.extend({
-      template: `<button>测试</button>`
-    });
-    (new Sub()).$mount('#root')
     const vm = new Vue({
       el: '#app',
       data: {
@@ -38,7 +35,6 @@
           return this.firstName + this.lastName
         }
       },
-      props: {},
       watch: {
         firstName(newVal, oldVal) {
           console.log(newVal, oldVal, '111')
