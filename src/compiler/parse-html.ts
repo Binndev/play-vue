@@ -58,7 +58,7 @@ export function parseHtml(html: string) {
       }
       advance(start[0].length)
 
-      // 如果不是开启标签的结束，就一直匹配
+      // 如果不是开始标签的结束，就一直匹配
       let attr, end
       while (
         !(end = html.match(startTagClose)) &&
