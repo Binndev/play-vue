@@ -55,11 +55,7 @@ vue 初始化时会为对象中的每个实例创建一个 `Dep` 实例用于保
 
 内部维护一个异步任务队列，每次调用 nextTick，会将回调函数放入异步任务队列中，通过异步函数调用队列中的函数。
 
-#### 异步方案降级
-
-`promise` -> `MutationObserver` -> `setImmediate` -> `setTimeout`
-
-####
+> 异步函数方案降级: `promise` -> `MutationObserver` -> `setImmediate` -> `setTimeout`
 
 ## computed 实现原理
 
