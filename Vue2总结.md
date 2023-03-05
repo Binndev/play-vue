@@ -65,4 +65,6 @@ Vue 在初始化时，会为每个计算属性创建一个计算属性 `watcher`
 
 ## watch 实现原理
 
+Vue 初始化时为每个 `watch` 创建一个 `wathcer` 实例，通过传入 `user = true` 来标识当前 `watcher` 为用户`自定义 watcher`。当依赖的属性更新时，触发`watcher`实例的`update`方法，如果是用户自定义`watcher`会将旧值和新值传入用户的`callback`中。
+
 ## diff 算法
