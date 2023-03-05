@@ -46,7 +46,7 @@ export function nextTick(cb?: (...args: any[]) => any, ctx?: object) {
   })
 
   if (!pending) {
-    pending = false
+    pending = true
     timerFunc()
   }
 

@@ -47,9 +47,23 @@ vue 初始化时会为对象中的每个实例创建一个 `Dep` 实例用于保
 
 ## nextTick
 
+### 异步更新 dom
+
+由于渲染 `watcher` 中可能会存在多个属性，多个属性可能会同时被修改，`watcher` 中的 `update` 方法会被触发多次。为了提升性能，vue 采用异步更新，且同一个 `watcher`，`update` 方法只执行一次。
+
+### 实现原理
+
+内部维护一个异步任务队列，每次调用 nextTick，会将回调函数放入异步任务队列中，通过异步函数调用队列中的函数。
+
+#### 异步方案降级
+
+`promise` -> `MutationObserver` -> `setImmediate` -> `setTimeout`
+
+####
+
 ## computed 实现原理
 
-Vue 在初始化时，会为每个计算属性创建一个计算属性 watcher，并将这些 watcher 挂载到实例上。通过传入 lazy 选项控制当前 wathcer 是计算属性 watcher，将计算属性的 getter 作为 watcher 的 getter，计算属性初始不会立即执行，属性被引用时才会执行。watcher 内部通过 dirty 判断需不需要执行 getter，不需要执行则直接返回原来的 value，从而达到缓存的效果。
+Vue 在初始化时，会为每个计算属性创建一个计算属性 `watcher`，并将这些 `watcher` 挂载到实例上。通过传入 `lazy` 选项控制当前 `wathcer` 是`计算属性 watcher`，将计算属性的 `getter` 作为 `watcher` 的 `getter`，计算属性初始不会立即执行，属性被引用时才会执行。`watcher` 内部通过 `dirty` 判断需不需要执行 `getter`，不需要执行则直接返回原来的 `value`，从而达到缓存的效果。
 
 > 1.计算属性默认不会立即执行 2.计算属性依赖计算属性 watcher 3.通过 dirty 判断 getter 函数需不需要执行
 
